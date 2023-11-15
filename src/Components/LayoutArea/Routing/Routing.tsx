@@ -1,16 +1,14 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import Insert from "../../DataArea/Insert/Insert";
-import List from "../../DataArea/List/List";
-import Home from "../../HomeArea/Home/Home";
 import PageNotFound from "../PageNotFound/PageNotFound";
+import Favorites from "../../WeatherArea/Favorites/Favorites";
+import WeatherData from "../../WeatherArea/WeatherData/WeatherData";
 
 function Routing(): JSX.Element {
     return (
         <Routes>
-            <Route path="/home" element={<Home />} />
-            <Route path="/list" element={<List />} />
-            <Route path="/insert" element={<Insert />} />
-            <Route path="/" element={<Navigate to="/home" />} />
+            <Route path="/weather" element={<WeatherData />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/" element={<Navigate to="/weather" />} />
             <Route path="*" element={<PageNotFound />} />
         </Routes>
     );
