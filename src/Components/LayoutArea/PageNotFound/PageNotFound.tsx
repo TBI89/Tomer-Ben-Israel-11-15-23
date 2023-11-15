@@ -1,9 +1,10 @@
 import "./PageNotFound.css";
+import pageNotFoundImage from "../../../Assets/Images/page-not-found.png";
 
 function PageNotFound(): JSX.Element {
     return (
         <div className="PageNotFound">
-			PageNotFound
+            <img src={pageNotFoundImage} alt="PageNotFoundImage" />
         </div>
     );
 }
