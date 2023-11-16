@@ -8,7 +8,7 @@ function Routing(): JSX.Element {
         <Routes>
             <Route path="/home/:cityName" element={<WeatherDetails />} />
             <Route path="/favorites" element={<Favorites />} />
-            <Route path="/" element={<Navigate to="/home/:cityName" />} />
+            <Route path="/" element={<Navigate to="/home/tel-aviv" />} />
             <Route path="*" element={<PageNotFound />} />
         </Routes>
     );

@@ -16,7 +16,7 @@ function WeatherDetails(): JSX.Element {
         locationsService.getOneCity(cityName)
             .then(location => setLocation(location))
             .catch(err => notifyService.error(err));
-    }, []);
+    }, [cityName]);
 
     console.log(location);
 
