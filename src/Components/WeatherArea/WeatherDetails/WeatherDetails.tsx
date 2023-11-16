@@ -1,6 +1,25 @@
+import { useEffect, useState } from "react";
 import "./WeatherDetails.css";
+import LocationModel from "../../../Models/LocationModel";
+import { useParams } from "react-router-dom";
+import locationsService from "../../../Services/LocationsService";
+import notifyService from "../../../Services/NotifyService";
 
 function WeatherDetails(): JSX.Element {
+
+    const [location, setLocation] = useState<LocationModel>();
+    const params = useParams();
+
+    const cityName = params.cityName;
+
+    useEffect(() => {
+        locationsService.getOneCity(cityName)
+            .then(location => setLocation(location))
+            .catch(err => notifyService.error(err));
+    }, []);
+
+    console.log(location);
+
     return (
         <div className="WeatherDetails">
 

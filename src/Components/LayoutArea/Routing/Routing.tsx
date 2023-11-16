@@ -6,9 +6,9 @@ import WeatherDetails from "../../WeatherArea/WeatherDetails/WeatherDetails";
 function Routing(): JSX.Element {
     return (
         <Routes>
-            <Route path="/home" element={<WeatherDetails />} />
+            <Route path="/home/:cityName" element={<WeatherDetails />} />
             <Route path="/favorites" element={<Favorites />} />
-            <Route path="/" element={<Navigate to="/home" />} />
+            <Route path="/" element={<Navigate to="/home/:cityName" />} />
             <Route path="*" element={<PageNotFound />} />
         </Routes>
     );

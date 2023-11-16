@@ -1,5 +1,9 @@
 class AppConfig {
-    public serverUrl = "http://localhost:4000/api/____/";
+    private baseUrl = "https://dataservice.accuweather.com/locations/v1/cities/autocomplete";
+
+    public getLocationsUrl(cityName: string): string {
+        return `${this.baseUrl}?q=${cityName}`;
+    }
 }
 
 const appConfig = new AppConfig();
