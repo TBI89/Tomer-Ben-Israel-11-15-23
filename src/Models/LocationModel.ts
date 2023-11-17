@@ -1,6 +1,6 @@
 class LocationModel {
-    public id: number;
-    public name: string;
+   public Key: string;
+   public LocalizedName: string;
 }
 
 export default LocationModel;
