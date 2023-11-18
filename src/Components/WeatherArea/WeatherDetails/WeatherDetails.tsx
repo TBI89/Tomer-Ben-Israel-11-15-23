@@ -6,10 +6,12 @@ import locationsService from "../../../Services/LocationsService";
 import notifyService from "../../../Services/NotifyService";
 import TemperatureModel from "../../../Models/TemperatureModel";
 import temperatureService from "../../../Services/TemperatureService";
+import ForecastModel from "../../../Models/ForecastModel";
 
 function WeatherDetails(): JSX.Element {
     const [location, setLocation] = useState<LocationModel | null>(null);
     const [temperature, setTemperature] = useState<TemperatureModel[]>([]);
+    const [forecast, setForecast] = useState<ForecastModel>();
     const [cityInput, setCityInput] = useState<string>("");
     const params = useParams();
     const navigate = useNavigate();
@@ -17,6 +19,7 @@ function WeatherDetails(): JSX.Element {
     useEffect(() => {
         fetchLocationData(params.cityName || "DefaultCityName");
         fetchTemperatureData(params.cityName || "DefaultCityName");
+        fetchForecastData(params.cityName || "DefaultCityName");
     }, [params.cityName]);
 
     function fetchLocationData(cityName: string) {
@@ -40,6 +43,21 @@ function WeatherDetails(): JSX.Element {
             .catch(err => notifyService.error(err));
     };
 
+    function fetchForecastData(cityName: string) {
+        locationsService.getOneCity(cityName)
+            .then(locations => {
+                const locationKey = locations[0]?.Key;
+                if (locationKey) {
+                    temperatureService.getFiveDayForecast(locationKey)
+                        .then(forecasts => setForecast(forecasts))
+                }
+                else {
+                    notifyService.error("Error fetching forecast data");
+                }
+            })
+            .catch(err => notifyService.error(err));
+    };
+
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newCityName = cityInput.trim() !== "" ? cityInput : "DefaultCityName";
@@ -47,7 +65,9 @@ function WeatherDetails(): JSX.Element {
     };
 
     const administrativeAreaName = location?.LocalizedName;
-    
+
+    console.log(forecast);
+
     return (
         <div className="WeatherDetails">
 
@@ -60,7 +80,7 @@ function WeatherDetails(): JSX.Element {
                             placeholder="Enter city name"
                             aria-label="Search"
                             value={cityInput}
-                            onChange={(e) => setCityInput(e.target.value)}
+                            onChange={e => setCityInput(e.target.value)}
                         />
                         <button className="btn btn-outline-success" type="submit">
                             Search
@@ -84,6 +104,22 @@ function WeatherDetails(): JSX.Element {
                     <p>Loading...</p>
                 )}
             </div>
+
+            <div className="ForecastDataContainer">
+                <h3>5-Day Forecast</h3>
+                {forecast?.DailyForecasts && forecast.DailyForecasts.length > 0 ? (
+                    forecast.DailyForecasts.map((dailyForecast, index) => (
+                        <div key={index}>
+                            <p>Date: {dailyForecast.Date}</p>
+                            <p>Min Temp: {dailyForecast.Temperature.Minimum.Value}°{dailyForecast.Temperature.Minimum.Unit}</p>
+                            <p>Max Temp: {dailyForecast.Temperature.Maximum.Value}°{dailyForecast.Temperature.Maximum.Unit}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>Loading forecast...</p>
+                )}
+            </div>
+
         </div>
     );
 }
