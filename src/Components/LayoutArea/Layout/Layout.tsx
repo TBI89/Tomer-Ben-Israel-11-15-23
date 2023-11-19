@@ -5,7 +5,7 @@ import "./Layout.css";
 function Layout(): JSX.Element {
     return (
         <div className="Layout">
-            
+
             <header>
                 <Menu />
             </header>

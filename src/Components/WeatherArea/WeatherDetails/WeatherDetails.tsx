@@ -7,6 +7,8 @@ import notifyService from "../../../Services/NotifyService";
 import TemperatureModel from "../../../Models/TemperatureModel";
 import temperatureService from "../../../Services/TemperatureService";
 import ForecastModel from "../../../Models/ForecastModel";
+import Spinner from "../../SharedArea/Spinner/Spinner";
+import useTitle from "../../../Utils/UseTitle";
 
 function WeatherDetails(): JSX.Element {
     const [location, setLocation] = useState<LocationModel | null>(null);
@@ -16,6 +18,8 @@ function WeatherDetails(): JSX.Element {
     const [favorites, setFavorites] = useState<string[]>([]);
     const params = useParams();
     const navigate = useNavigate();
+
+    useTitle("Weather In My Pocket | Home");
 
     useEffect(() => {
 
@@ -109,16 +113,17 @@ function WeatherDetails(): JSX.Element {
                             value={cityInput}
                             onChange={e => setCityInput(e.target.value)}
                         />
-                        <button className="btn btn-outline-success" type="submit">
+                        <button className="btn btn-outline-primary" type="submit">
                             Search
                         </button>
                     </form>
                 </div>
             </nav>
 
-            <button className="AddToFavoritesButton" onClick={() => saveCityToSessionStorage(cityInput)}>Add To Favorites</button>
+            <button className="AddToFavoritesButton btn btn-primary" onClick={() => saveCityToSessionStorage(cityInput)}>Add To Favorites</button>
 
             <div className="LocationDataContainer">
+
                 {administrativeAreaName ? (
                     <>
                         <p className="CityNamePlaceholder">{administrativeAreaName}</p>
@@ -130,11 +135,11 @@ function WeatherDetails(): JSX.Element {
                                 </span>
                             ))
                         ) : (
-                            <p>Loading temperature...</p>
+                            <p>{< Spinner />}</p>
                         )}
                     </>
                 ) : (
-                    <p>Loading...</p>
+                    <p>{< Spinner />}</p>
                 )}
             </div>
 
@@ -152,7 +157,7 @@ function WeatherDetails(): JSX.Element {
                         </div>
                     ))
                 ) : (
-                    <p>Loading forecast...</p>
+                    <p>{< Spinner />}</p>
                 )}
             </div>
 

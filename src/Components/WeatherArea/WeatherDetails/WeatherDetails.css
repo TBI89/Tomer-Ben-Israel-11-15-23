@@ -1,13 +1,9 @@
-.WeatherDetails>.navbar>.container-fluid>.d-flex {
-    margin: auto;
-}
-
 .WeatherDetails>.LocationDataContainer {
     margin: 20px 0 100px;
 }
 
-.WeatherDetails>.LocationDataContainer>.CityNamePlaceholder {
-    margin-bottom: -5px;
+.WeatherDetails>.navbar {
+    background-image: linear-gradient(180deg, #ADD8E6, #FAFAD2);
 }
 
 .WeatherDetails>.ForecastDataContainer {

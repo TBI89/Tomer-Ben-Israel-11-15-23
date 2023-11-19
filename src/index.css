@@ -1,6 +1,13 @@
+@font-face {
+    font-family: "custom-font";
+    src: url(./Assets/Fonts/custom-font.ttf);
+}
+
 html, body, #root {
     height: 100vh;
     text-align: center;
+    font-family: "custom-font";
+    font-size: 17px;
 }
 
 a {

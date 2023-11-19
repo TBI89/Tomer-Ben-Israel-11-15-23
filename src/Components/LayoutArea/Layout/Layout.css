@@ -1,8 +1,9 @@
 .Layout {
     height: 100vh;
     display: grid;
-    grid-template-rows: 8% 92%;
+    grid-template-rows: auto 92%;
     grid-template-columns: repeat(10, 1fr);
+    background-image: url(../../../Assets/Images/default-background-image.jpg);
 }
 
 .Layout>header {
@@ -11,9 +12,4 @@
 
 .Layout>main {
     grid-column: span 10;
-}
-
-.Layout,
-.Layout>* {
-    border: 1px solid;
 }
