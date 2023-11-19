@@ -2,3 +2,12 @@
     background-image: linear-gradient(180deg, #87CEFA, #ADD8E6);
     font-weight: bold;
 }
+
+.Menu>.navbar>.container-fluid>.collapse>.navbar-nav>.nav-item {
+    transition: ease 0.3s;
+}
+
+.Menu>.navbar>.container-fluid>.collapse>.navbar-nav>.nav-item:hover {
+   background-color: rgba(0, 0, 200, 0.1);
+   border-radius: 10px;
+}

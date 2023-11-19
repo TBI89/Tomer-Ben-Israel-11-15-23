@@ -21,16 +21,37 @@ function WeatherDetails(): JSX.Element {
 
     useTitle("Weather In My Pocket | Home");
 
+    // Data for deployment:
+    // useEffect(() => {
+
+    //     const savedFavorites = JSON.parse(sessionStorage.getItem("favorites") || "[]");
+    //     setFavorites(savedFavorites);
+
+    //     fetchLocationData(params.cityName || "tel-aviv");
+    //     fetchTemperatureData(params.cityName || "tel-aviv");
+    //     fetchForecastData(params.cityName || "tel-aviv");
+
+    // }, [params.cityName]);
+
+    // Data for development:
+
+    // Data for development (saved locally): 
     useEffect(() => {
+        async function getLocalData() {
+            const locationResponse = await fetch("/AutoCompleteSearch.json");
+            const locationData = await locationResponse.json();
+            setLocation(locationData[0]);
 
-        const savedFavorites = JSON.parse(sessionStorage.getItem("favorites") || "[]");
-        setFavorites(savedFavorites);
+            const temperatureResponse = await fetch("/CurrentConditions.json");
+            const temperatureData = await temperatureResponse.json();
+            setTemperature(temperatureData);
 
-        fetchLocationData(params.cityName || "DefaultCityName");
-        fetchTemperatureData(params.cityName || "DefaultCityName");
-        fetchForecastData(params.cityName || "DefaultCityName");
-
-    }, [params.cityName]);
+            const forecastResponse = await fetch("/FiveDayForecast.json");
+            const forecastData = await forecastResponse.json();
+            setForecast(forecastData);
+        }
+        getLocalData();
+    }, []);
 
     function fetchLocationData(cityName: string) {
         locationsService.getOneCity(cityName)
@@ -70,7 +91,7 @@ function WeatherDetails(): JSX.Element {
 
     function handleSearch(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        const newCityName = cityInput.trim() !== "" ? cityInput : "DefaultCityName";
+        const newCityName = cityInput.trim() !== "" ? cityInput : "tel-aviv";
         navigate(`/home/${newCityName}`);
     }
 
@@ -126,20 +147,20 @@ function WeatherDetails(): JSX.Element {
 
                 {administrativeAreaName ? (
                     <>
-                        <p className="CityNamePlaceholder">{administrativeAreaName}</p>
+                        <h4>{administrativeAreaName}</h4>
                         {temperature.length > 0 ? (
                             temperature.map((temp, index) => (
                                 <span key={index}>
-                                    <p>{temp.Temperature.Metric.Value} °{temp.Temperature.Metric.Unit}</p>
-                                    <h2>{temp.WeatherText}</h2>
+                                    <h3>{temp.WeatherText}</h3>
+                                    <h2>{temp.Temperature.Metric.Value} °{temp.Temperature.Metric.Unit}</h2>
                                 </span>
                             ))
                         ) : (
-                            <p>{< Spinner />}</p>
+                            <span>{< Spinner />}</span>
                         )}
                     </>
                 ) : (
-                    <p>{< Spinner />}</p>
+                    <span>{< Spinner />}</span>
                 )}
             </div>
 
@@ -157,7 +178,7 @@ function WeatherDetails(): JSX.Element {
                         </div>
                     ))
                 ) : (
-                    <p>{< Spinner />}</p>
+                    <span>{< Spinner />}</span>
                 )}
             </div>
 

@@ -1,0 +1,174 @@
+{
+    "Headline": {
+        "EffectiveDate": "2023-11-19T13:00:00+02:00",
+        "EffectiveEpochDate": 1700391600,
+        "Severity": 2,
+        "Text": "Expect showery weather Sunday afternoon through Monday morning",
+        "Category": "rain",
+        "EndDate": "2023-11-20T13:00:00+02:00",
+        "EndEpochDate": 1700478000,
+        "MobileLink": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?lang=en-us",
+        "Link": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?lang=en-us"
+    },
+    "DailyForecasts": [
+        {
+            "Date": "2023-11-15T07:00:00+02:00",
+            "EpochDate": 1700024400,
+            "Temperature": {
+                "Minimum": {
+                    "Value": 65,
+                    "Unit": "F",
+                    "UnitType": 18
+                },
+                "Maximum": {
+                    "Value": 77,
+                    "Unit": "F",
+                    "UnitType": 18
+                }
+            },
+            "Day": {
+                "Icon": 2,
+                "IconPhrase": "Mostly sunny",
+                "HasPrecipitation": false
+            },
+            "Night": {
+                "Icon": 33,
+                "IconPhrase": "Clear",
+                "HasPrecipitation": false
+            },
+            "Sources": [
+                "AccuWeather"
+            ],
+            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=1&lang=en-us",
+            "Link": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=1&lang=en-us"
+        },
+        {
+            "Date": "2023-11-16T07:00:00+02:00",
+            "EpochDate": 1700110800,
+            "Temperature": {
+                "Minimum": {
+                    "Value": 66,
+                    "Unit": "F",
+                    "UnitType": 18
+                },
+                "Maximum": {
+                    "Value": 79,
+                    "Unit": "F",
+                    "UnitType": 18
+                }
+            },
+            "Day": {
+                "Icon": 1,
+                "IconPhrase": "Sunny",
+                "HasPrecipitation": false
+            },
+            "Night": {
+                "Icon": 35,
+                "IconPhrase": "Partly cloudy",
+                "HasPrecipitation": false
+            },
+            "Sources": [
+                "AccuWeather"
+            ],
+            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=2&lang=en-us",
+            "Link": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=2&lang=en-us"
+        },
+        {
+            "Date": "2023-11-17T07:00:00+02:00",
+            "EpochDate": 1700197200,
+            "Temperature": {
+                "Minimum": {
+                    "Value": 67,
+                    "Unit": "F",
+                    "UnitType": 18
+                },
+                "Maximum": {
+                    "Value": 79,
+                    "Unit": "F",
+                    "UnitType": 18
+                }
+            },
+            "Day": {
+                "Icon": 2,
+                "IconPhrase": "Mostly sunny",
+                "HasPrecipitation": false
+            },
+            "Night": {
+                "Icon": 35,
+                "IconPhrase": "Partly cloudy",
+                "HasPrecipitation": false
+            },
+            "Sources": [
+                "AccuWeather"
+            ],
+            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=3&lang=en-us",
+            "Link": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=3&lang=en-us"
+        },
+        {
+            "Date": "2023-11-18T07:00:00+02:00",
+            "EpochDate": 1700283600,
+            "Temperature": {
+                "Minimum": {
+                    "Value": 68,
+                    "Unit": "F",
+                    "UnitType": 18
+                },
+                "Maximum": {
+                    "Value": 79,
+                    "Unit": "F",
+                    "UnitType": 18
+                }
+            },
+            "Day": {
+                "Icon": 3,
+                "IconPhrase": "Partly sunny",
+                "HasPrecipitation": false
+            },
+            "Night": {
+                "Icon": 34,
+                "IconPhrase": "Mostly clear",
+                "HasPrecipitation": false
+            },
+            "Sources": [
+                "AccuWeather"
+            ],
+            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=4&lang=en-us",
+            "Link": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=4&lang=en-us"
+        },
+        {
+            "Date": "2023-11-19T07:00:00+02:00",
+            "EpochDate": 1700370000,
+            "Temperature": {
+                "Minimum": {
+                    "Value": 62,
+                    "Unit": "F",
+                    "UnitType": 18
+                },
+                "Maximum": {
+                    "Value": 78,
+                    "Unit": "F",
+                    "UnitType": 18
+                }
+            },
+            "Day": {
+                "Icon": 13,
+                "IconPhrase": "Mostly cloudy w/ showers",
+                "HasPrecipitation": true,
+                "PrecipitationType": "Rain",
+                "PrecipitationIntensity": "Heavy"
+            },
+            "Night": {
+                "Icon": 12,
+                "IconPhrase": "Showers",
+                "HasPrecipitation": true,
+                "PrecipitationType": "Rain",
+                "PrecipitationIntensity": "Heavy"
+            },
+            "Sources": [
+                "AccuWeather"
+            ],
+            "MobileLink": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=5&lang=en-us",
+            "Link": "http://www.accuweather.com/en/il/tel-aviv-port/215793/daily-weather-forecast/215793?day=5&lang=en-us"
+        }
+    ]
+}
