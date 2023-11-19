@@ -1,3 +1,29 @@
 .WeatherDetails>.navbar>.container-fluid>.d-flex {
     margin: auto;
 }
+
+.WeatherDetails>.LocationDataContainer {
+    margin: 20px 0 100px;
+}
+
+.WeatherDetails>.LocationDataContainer>.CityNamePlaceholder {
+    margin-bottom: -5px;
+}
+
+.WeatherDetails>.ForecastDataContainer {
+    margin-top: 250px;
+}
+
+.WeatherDetails>.ForecastDataContainer>div {
+    border: 1px solid;
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    height: 200px;
+}
+
+.WeatherDetails>.AddToFavoritesButton {
+    position: absolute;
+    right: 3%;
+    top: 20%;
+}

@@ -1,19 +1,20 @@
 class AppConfig {
     private apiKey = "wTmR0iYDHQ2uxZQlgIOKyLpQBX8tZj38";
-    private locationsUrl = "https://dataservice.accuweather.com/locations/v1/cities/autocomplete";
-    private currentConditionsUrl ="https://dataservice.accuweather.com/currentconditions/v1/";
-    private forecastsUrl = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/";
+    private baseUrl = "https://dataservice.accuweather.com/"
+    private locationsUrl = "locations/v1/cities/autocomplete";
+    private currentConditionsUrl ="currentconditions/v1/";
+    private forecastsUrl = "forecasts/v1/daily/5day/";
 
     public getLocationsUrl(cityName: string): string {
-        return `${this.locationsUrl}?q=${cityName}&apikey=${this.apiKey}`;
+        return `${this.baseUrl}${this.locationsUrl}?q=${cityName}&apikey=${this.apiKey}`;
     }
 
     public getCurrentConditionsUrl(locationKey: string): string {
-        return `${this.currentConditionsUrl}${locationKey}?apikey=${this.apiKey}&language=en-us&details=false`;
+        return `${this.baseUrl}${this.currentConditionsUrl}${locationKey}?apikey=${this.apiKey}&language=en-us&details=false`;
     }
 
     public getForecastsUrl(locationKey: string): string {
-        return `${this.forecastsUrl}${locationKey}?apikey=${this.apiKey}&language=en-us&details=false`;
+        return `${this.baseUrl}${this.forecastsUrl}${locationKey}?apikey=${this.apiKey}&language=en-us&details=false`;
     }
 }
 

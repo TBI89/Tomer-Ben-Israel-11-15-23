@@ -12,7 +12,7 @@ function Menu(): JSX.Element {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <NavLink className="nav-link active" aria-current="page" to="/home">Home</NavLink>
+                                <NavLink className="nav-link active" aria-current="page" to="/home/tel-aviv">Home</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/favorites">Favorites</NavLink>

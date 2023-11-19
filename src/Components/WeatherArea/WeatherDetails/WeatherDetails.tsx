@@ -13,20 +13,26 @@ function WeatherDetails(): JSX.Element {
     const [temperature, setTemperature] = useState<TemperatureModel[]>([]);
     const [forecast, setForecast] = useState<ForecastModel>();
     const [cityInput, setCityInput] = useState<string>("");
+    const [favorites, setFavorites] = useState<string[]>([]);
     const params = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
+
+        const savedFavorites = JSON.parse(sessionStorage.getItem("favorites") || "[]");
+        setFavorites(savedFavorites);
+
         fetchLocationData(params.cityName || "DefaultCityName");
         fetchTemperatureData(params.cityName || "DefaultCityName");
         fetchForecastData(params.cityName || "DefaultCityName");
+
     }, [params.cityName]);
 
     function fetchLocationData(cityName: string) {
         locationsService.getOneCity(cityName)
             .then(locations => setLocation(locations[0]))
             .catch(err => notifyService.error(err));
-    };
+    }
 
     function fetchTemperatureData(cityName: string) {
         locationsService.getOneCity(cityName)
@@ -41,7 +47,7 @@ function WeatherDetails(): JSX.Element {
                 }
             })
             .catch(err => notifyService.error(err));
-    };
+    }
 
     function fetchForecastData(cityName: string) {
         locationsService.getOneCity(cityName)
@@ -56,17 +62,38 @@ function WeatherDetails(): JSX.Element {
                 }
             })
             .catch(err => notifyService.error(err));
-    };
+    }
 
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    function handleSearch(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const newCityName = cityInput.trim() !== "" ? cityInput : "DefaultCityName";
         navigate(`/home/${newCityName}`);
-    };
+    }
+
+    function formatDayOfWeek(dateString: string): string {
+        const options: Intl.DateTimeFormatOptions = { weekday: 'short' };
+        const date = new Date(dateString);
+        return new Intl.DateTimeFormat('en-US', options).format(date);
+    }
+
+    function fahrenheitToCelsius(fahrenheit: number): number {
+        return ((fahrenheit - 32) * 5) / 9;
+    }
+
+    function convertTemperature(temperature: { Value: number; Unit: string }): string {
+        const celsiusValue = fahrenheitToCelsius(temperature.Value);
+        return `${celsiusValue.toFixed(1)}°C`;
+    }
+
+    function saveCityToSessionStorage(city: string) {
+        setFavorites(prevFavorites => [...prevFavorites, city]);
+        if (city === "") {
+            city = "Tel-aviv Port";
+        }
+        sessionStorage.setItem("favorites", JSON.stringify([...favorites, city]));
+    }
 
     const administrativeAreaName = location?.LocalizedName;
-
-    console.log(forecast);
 
     return (
         <div className="WeatherDetails">
@@ -88,13 +115,19 @@ function WeatherDetails(): JSX.Element {
                     </form>
                 </div>
             </nav>
+
+            <button className="AddToFavoritesButton" onClick={() => saveCityToSessionStorage(cityInput)}>Add To Favorites</button>
+
             <div className="LocationDataContainer">
                 {administrativeAreaName ? (
                     <>
-                        <h2>{administrativeAreaName}</h2>
+                        <p className="CityNamePlaceholder">{administrativeAreaName}</p>
                         {temperature.length > 0 ? (
                             temperature.map((temp, index) => (
-                                <p key={index}>Temperature: {temp.Temperature.Metric.Unit}°{temp.Temperature.Metric.Value}</p>
+                                <span key={index}>
+                                    <p>{temp.Temperature.Metric.Value} °{temp.Temperature.Metric.Unit}</p>
+                                    <h2>{temp.WeatherText}</h2>
+                                </span>
                             ))
                         ) : (
                             <p>Loading temperature...</p>
@@ -106,13 +139,16 @@ function WeatherDetails(): JSX.Element {
             </div>
 
             <div className="ForecastDataContainer">
-                <h3>5-Day Forecast</h3>
                 {forecast?.DailyForecasts && forecast.DailyForecasts.length > 0 ? (
                     forecast.DailyForecasts.map((dailyForecast, index) => (
                         <div key={index}>
-                            <p>Date: {dailyForecast.Date}</p>
-                            <p>Min Temp: {dailyForecast.Temperature.Minimum.Value}°{dailyForecast.Temperature.Minimum.Unit}</p>
-                            <p>Max Temp: {dailyForecast.Temperature.Maximum.Value}°{dailyForecast.Temperature.Maximum.Unit}</p>
+                            <span>
+                                <h3>{formatDayOfWeek(dailyForecast.Date)}</h3>
+                                <br />
+                                <h6>{convertTemperature(dailyForecast.Temperature.Minimum)}
+                                    - {convertTemperature(dailyForecast.Temperature.Maximum)}
+                                </h6>
+                            </span>
                         </div>
                     ))
                 ) : (
@@ -120,7 +156,7 @@ function WeatherDetails(): JSX.Element {
                 )}
             </div>
 
-        </div>
+        </div >
     );
 }
 
