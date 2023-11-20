@@ -28,7 +28,8 @@ function WeatherDetails(): JSX.Element {
     // Data for production:
     // useEffect(() => {
     //     const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
-    //     setIsFavorite(favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === cityInput));
+    //     const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
+    //     setIsFavorite(isCityInFavorites);
 
     //     fetchLocationData(params.cityName || "tel-aviv");
     //     fetchTemperatureData(params.cityName || "tel-aviv");
@@ -39,7 +40,8 @@ function WeatherDetails(): JSX.Element {
     useEffect(() => {
         async function getLocalData() {
             const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
-            setIsFavorite(favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === cityInput));
+            const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
+            setIsFavorite(isCityInFavorites);
 
             const locationResponse = await fetch("/AutoCompleteSearch.json");
             const locationData = await locationResponse.json();
@@ -54,8 +56,8 @@ function WeatherDetails(): JSX.Element {
             setForecast(forecastData);
         }
         getLocalData();
-    }, []);
-
+    }, [params.cityName]);
+    
     function fetchLocationData(cityName: string) {
         locationsService.getOneCity(cityName)
             .then(locations => setLocation(locations[0]))
@@ -121,13 +123,17 @@ function WeatherDetails(): JSX.Element {
             const newFavorite = new FavoritesModel(
                 Date.now(),
                 city || "tel-aviv",
-                `${WeatherText}, ${Value} ${Unit}`
+                `${WeatherText}, ${Value}° ${Unit}`
             );
 
             const isAlreadyInFavorites = favorites.some(fav => fav.cityName === newFavorite.cityName);
 
             if (isAlreadyInFavorites) {
-                notifyService.error("This city was already on your favorites");
+                const updatedFavorites = favorites.filter(fav => fav.cityName !== newFavorite.cityName);
+                setFavorites(updatedFavorites);
+                sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+                setIsFavorite(false);
+                notifyService.success("The city was removed from your favorites!");
             } else {
                 setFavorites(prevFavorites => [...prevFavorites, newFavorite]);
                 sessionStorage.setItem("favorites", JSON.stringify([...favorites, newFavorite]));

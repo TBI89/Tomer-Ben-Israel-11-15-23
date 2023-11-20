@@ -3,14 +3,19 @@
     height: 200px;
     margin: 10px;
     display: inline-block;
-    background-color: rgba(100, 150, 200, 0.7);
+    background-color: rgba(100, 150, 250, 0.4);
     border-radius: 10px;
     box-shadow: 1px 2px 1px;
+    transition: ease 0.5s;
+}
+
+.Favorites>.FavoriteCard:hover {
+    transform:translateY(10px);
 }
 
 .Favorites>.FavoriteCard>.OptionsContainer {
-  display: flex;
-  margin: 5px 0 0 5px;
+    display: flex;
+    margin: 5px 0 0 5px;
 }
 
 .Favorites>.FavoriteCard>.OptionsContainer button {
