@@ -31,3 +31,9 @@
     right: 3%;
     top: 20%;
 }
+
+.WeatherDetails>.AddToFavoritesButton {
+    border: none;
+    background: none;
+    color: white;
+}

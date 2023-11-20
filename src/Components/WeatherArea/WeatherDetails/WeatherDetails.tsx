@@ -9,35 +9,38 @@ import temperatureService from "../../../Services/TemperatureService";
 import ForecastModel from "../../../Models/ForecastModel";
 import Spinner from "../../SharedArea/Spinner/Spinner";
 import useTitle from "../../../Utils/UseTitle";
+import FavoritesModel from "../../../Models/FavoritesModel";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function WeatherDetails(): JSX.Element {
     const [location, setLocation] = useState<LocationModel | null>(null);
     const [temperature, setTemperature] = useState<TemperatureModel[]>([]);
     const [forecast, setForecast] = useState<ForecastModel>();
     const [cityInput, setCityInput] = useState<string>("");
-    const [favorites, setFavorites] = useState<string[]>([]);
+    const [favorites, setFavorites] = useState<FavoritesModel[]>([]);
+    const [isFavorite, setIsFavorite] = useState<boolean>(false);
     const params = useParams();
     const navigate = useNavigate();
 
     useTitle("Weather In My Pocket | Home");
 
-    // Data for deployment:
+    // Data for production:
     // useEffect(() => {
-
-    //     const savedFavorites = JSON.parse(sessionStorage.getItem("favorites") || "[]");
-    //     setFavorites(savedFavorites);
+    //     const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
+    //     setIsFavorite(favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === cityInput));
 
     //     fetchLocationData(params.cityName || "tel-aviv");
     //     fetchTemperatureData(params.cityName || "tel-aviv");
     //     fetchForecastData(params.cityName || "tel-aviv");
-
     // }, [params.cityName]);
-
-    // Data for development:
 
     // Data for development (saved locally): 
     useEffect(() => {
         async function getLocalData() {
+            const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
+            setIsFavorite(favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === cityInput));
+
             const locationResponse = await fetch("/AutoCompleteSearch.json");
             const locationData = await locationResponse.json();
             setLocation(locationData[0]);
@@ -111,11 +114,29 @@ function WeatherDetails(): JSX.Element {
     }
 
     function saveCityToSessionStorage(city: string) {
-        setFavorites(prevFavorites => [...prevFavorites, city]);
-        if (city === "") {
-            city = "Tel-aviv Port";
+        if (location && temperature.length > 0) {
+            const { WeatherText } = temperature[0] || { WeatherText: "N/A" };
+            const { Value, Unit } = temperature[0]?.Temperature?.Metric || { Value: 0, Unit: "C" };
+
+            const newFavorite = new FavoritesModel(
+                Date.now(),
+                city || "tel-aviv",
+                `${WeatherText}, ${Value} ${Unit}`
+            );
+
+            const isAlreadyInFavorites = favorites.some(fav => fav.cityName === newFavorite.cityName);
+
+            if (isAlreadyInFavorites) {
+                notifyService.error("This city was already on your favorites");
+            } else {
+                setFavorites(prevFavorites => [...prevFavorites, newFavorite]);
+                sessionStorage.setItem("favorites", JSON.stringify([...favorites, newFavorite]));
+                setIsFavorite(true);
+                notifyService.success("The city was added to your favorites!");
+            }
+        } else {
+            notifyService.error("Error fetching data for the favorite city");
         }
-        sessionStorage.setItem("favorites", JSON.stringify([...favorites, city]));
     }
 
     const administrativeAreaName = location?.LocalizedName;
@@ -141,7 +162,12 @@ function WeatherDetails(): JSX.Element {
                 </div>
             </nav>
 
-            <button className="AddToFavoritesButton btn btn-primary" onClick={() => saveCityToSessionStorage(cityInput)}>Add To Favorites</button>
+            <button
+                className="AddToFavoritesButton"
+                onClick={() => saveCityToSessionStorage(cityInput)}
+            >
+                {isFavorite ? <FavoriteIcon fontSize="large" /> : <FavoriteBorderIcon fontSize="large" />}
+            </button>
 
             <div className="LocationDataContainer">
 
