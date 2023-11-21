@@ -43,6 +43,28 @@ function WeatherDetails(): JSX.Element {
         fetchForecastData(params.cityName || "tel-aviv");
     }, [params.cityName]);
 
+    // Display data locally for development only:
+    // useEffect(() => {
+    //     async function getLocalData() {
+    //         const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
+    //         const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
+    //         setIsFavorite(isCityInFavorites);
+
+    //         const locationResponse = await fetch("/AutoCompleteSearch.json");
+    //         const locationData = await locationResponse.json();
+    //         setLocation(locationData[0]);
+
+    //         const temperatureResponse = await fetch("/CurrentConditions.json");
+    //         const temperatureData = await temperatureResponse.json();
+    //         setTemperature(temperatureData);
+
+    //         const forecastResponse = await fetch("/FiveDayForecast.json");
+    //         const forecastData = await forecastResponse.json();
+    //         setForecast(forecastData);
+    //     }
+    //     getLocalData();
+    // }, [params.cityName]);
+
     function fetchLocationData(cityName: string) {
         locationsService.getOneCity(cityName)
             .then(locations => setLocation(locations[0]))
