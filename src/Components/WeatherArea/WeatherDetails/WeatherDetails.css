@@ -1,5 +1,5 @@
 .WeatherDetails>.LocationDataContainer {
-    margin: 20px 0 100px;
+    margin: 20px 0 50px;
 }
 
 .WeatherDetails>.navbar {
@@ -23,15 +23,8 @@
 }
 
 .WeatherDetails>.AddToFavoritesButton {
-    position: absolute;
-    right: 3%;
-    top: 20%;
-}
-
-.WeatherDetails>.AddToFavoritesButton {
     border: none;
     background: none;
-    color: white;
 }
 
 .WeatherDetails>.LocationDataContainer>span>img {
@@ -39,5 +32,5 @@
 }
 
 .WeatherDetails>.ForecastDataContainer>div>span>img {
-    width: 50px;
+    width: 40px;
 }

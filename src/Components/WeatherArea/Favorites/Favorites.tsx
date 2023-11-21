@@ -1,17 +1,23 @@
 import InfoIcon from '@mui/icons-material/Info';
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import FavoritesModel from "../../../Models/FavoritesModel";
 import useTitle from "../../../Utils/UseTitle";
 import "./Favorites.css";
+import notifyService from '../../../Services/NotifyService';
 
 function Favorites(): JSX.Element {
 
     useTitle("Weather In My Pocket | Favorites");
     const [favorites, setFavorites] = useState<FavoritesModel[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const savedFavorites = JSON.parse(sessionStorage.getItem("favorites") || "[]");
+        if (savedFavorites.length === 0) {
+            notifyService.error("Please add cities to your list to view that page");
+            navigate("/home/tel-aviv");
+        }
         setFavorites(savedFavorites);
     }, []);
 

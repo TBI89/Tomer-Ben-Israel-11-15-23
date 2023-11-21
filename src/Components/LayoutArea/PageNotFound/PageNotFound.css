@@ -1,3 +1,10 @@
 .PageNotFound>img {
     width: 1000px;
 }
+
+@media (max-width: 767px) {
+    .PageNotFound>img {
+        width: 400px;
+        margin-top: 100px;
+    }
+}

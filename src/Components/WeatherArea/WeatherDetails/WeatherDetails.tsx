@@ -7,10 +7,9 @@ import cloudWeatherTextImage from "../../../Assets/Images/cloud-current-weather.
 import defaultWeatherTextImage from "../../../Assets/Images/default-current-weather.gif";
 import rainWeatherTextImage from "../../../Assets/Images/rain-current-weather.gif";
 import snowWeatherTextImage from "../../../Assets/Images/snow-current-weather.gif";
+import sunnyWeatherTextImage from "../../../Assets/Images/sunny-current-weather.gif";
 import thunderstormWeatherTextImage from "../../../Assets/Images/thunderstorm-current-weather.gif";
 import windWeatherTextImage from "../../../Assets/Images/wind-current-weather.gif";
-import sunnyWeatherTextImage from "../../../Assets/Images/sunny-current-weather.gif";
-import partlyCloudyWeatherTextImage from "../../../Assets/Images/partly-cloudy-current-weather.gif";
 import FavoritesModel from "../../../Models/FavoritesModel";
 import ForecastModel from "../../../Models/ForecastModel";
 import LocationModel from "../../../Models/LocationModel";
@@ -34,37 +33,14 @@ function WeatherDetails(): JSX.Element {
 
     useTitle("Weather In My Pocket | Home");
 
-    // Data for production:
-    // useEffect(() => {
-    //     const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
-    //     const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
-    //     setIsFavorite(isCityInFavorites);
-
-    //     fetchLocationData(params.cityName || "tel-aviv");
-    //     fetchTemperatureData(params.cityName || "tel-aviv");
-    //     fetchForecastData(params.cityName || "tel-aviv");
-    // }, [params.cityName]);
-
-    // Data for development (saved locally): 
     useEffect(() => {
-        async function getLocalData() {
-            const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
-            const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
-            setIsFavorite(isCityInFavorites);
+        const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
+        const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
+        setIsFavorite(isCityInFavorites);
 
-            const locationResponse = await fetch("/AutoCompleteSearch.json");
-            const locationData = await locationResponse.json();
-            setLocation(locationData[0]);
-
-            const temperatureResponse = await fetch("/CurrentConditions.json");
-            const temperatureData = await temperatureResponse.json();
-            setTemperature(temperatureData);
-
-            const forecastResponse = await fetch("/FiveDayForecast.json");
-            const forecastData = await forecastResponse.json();
-            setForecast(forecastData);
-        }
-        getLocalData();
+        fetchLocationData(params.cityName || "tel-aviv");
+        fetchTemperatureData(params.cityName || "tel-aviv");
+        fetchForecastData(params.cityName || "tel-aviv");
     }, [params.cityName]);
 
     function fetchLocationData(cityName: string) {
