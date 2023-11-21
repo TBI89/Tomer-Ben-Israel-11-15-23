@@ -3,7 +3,6 @@
     display: grid;
     grid-template-rows: auto 92%;
     grid-template-columns: repeat(10, 1fr);
-    background-image: url(../../../Assets/Images/default-background-image.jpg);
 }
 
 .Layout>header {

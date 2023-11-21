@@ -24,6 +24,11 @@ class Maximum {
 class DailyForecast {
     public Date: string;
     public Temperature: Temperature;
+    public Day: Day;
+}
+
+class Day {
+    public IconPhrase: string;
 }
 
 export default ForecastModel;

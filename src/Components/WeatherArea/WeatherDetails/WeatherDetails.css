@@ -6,10 +6,6 @@
     background-image: linear-gradient(180deg, #ADD8E6, #FAFAD2);
 }
 
-.WeatherDetails>.ForecastDataContainer {
-    margin-top: 250px;
-}
-
 .WeatherDetails>.ForecastDataContainer>div {
     background-color: rgba(50, 100, 200, 0.45);
     border-radius: 10px;
@@ -36,4 +32,12 @@
     border: none;
     background: none;
     color: white;
+}
+
+.WeatherDetails>.LocationDataContainer>span>img {
+    width: 150px;
+}
+
+.WeatherDetails>.ForecastDataContainer>div>span>img {
+    width: 50px;
 }

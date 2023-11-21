@@ -1,17 +1,26 @@
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import React, { useEffect, useState } from "react";
-import "./WeatherDetails.css";
+import { useNavigate, useParams } from "react-router-dom";
+import clearWeatherTextImage from "../../../Assets/Images/clear-current-weather.gif";
+import cloudWeatherTextImage from "../../../Assets/Images/cloud-current-weather.gif";
+import defaultWeatherTextImage from "../../../Assets/Images/default-current-weather.gif";
+import rainWeatherTextImage from "../../../Assets/Images/rain-current-weather.gif";
+import snowWeatherTextImage from "../../../Assets/Images/snow-current-weather.gif";
+import thunderstormWeatherTextImage from "../../../Assets/Images/thunderstorm-current-weather.gif";
+import windWeatherTextImage from "../../../Assets/Images/wind-current-weather.gif";
+import sunnyWeatherTextImage from "../../../Assets/Images/sunny-current-weather.gif";
+import partlyCloudyWeatherTextImage from "../../../Assets/Images/partly-cloudy-current-weather.gif";
+import FavoritesModel from "../../../Models/FavoritesModel";
+import ForecastModel from "../../../Models/ForecastModel";
 import LocationModel from "../../../Models/LocationModel";
-import { useParams, useNavigate } from "react-router-dom";
+import TemperatureModel from "../../../Models/TemperatureModel";
 import locationsService from "../../../Services/LocationsService";
 import notifyService from "../../../Services/NotifyService";
-import TemperatureModel from "../../../Models/TemperatureModel";
 import temperatureService from "../../../Services/TemperatureService";
-import ForecastModel from "../../../Models/ForecastModel";
-import Spinner from "../../SharedArea/Spinner/Spinner";
 import useTitle from "../../../Utils/UseTitle";
-import FavoritesModel from "../../../Models/FavoritesModel";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import Spinner from "../../SharedArea/Spinner/Spinner";
+import "./WeatherDetails.css";
 
 function WeatherDetails(): JSX.Element {
     const [location, setLocation] = useState<LocationModel | null>(null);
@@ -57,7 +66,7 @@ function WeatherDetails(): JSX.Element {
         }
         getLocalData();
     }, [params.cityName]);
-    
+
     function fetchLocationData(cityName: string) {
         locationsService.getOneCity(cityName)
             .then(locations => setLocation(locations[0]))
@@ -147,6 +156,25 @@ function WeatherDetails(): JSX.Element {
 
     const administrativeAreaName = location?.LocalizedName;
 
+    type WeatherCondition =
+        | "Clear"
+        | "Sunny"
+        | "Cloudy"
+        | "Rain"
+        | "Thunderstorm"
+        | "Snow"
+        | "Wind";
+
+    const weatherImageMapping: Record<WeatherCondition, string> = {
+        Clear: clearWeatherTextImage,
+        Sunny: sunnyWeatherTextImage,
+        Cloudy: cloudWeatherTextImage,
+        Rain: rainWeatherTextImage,
+        Thunderstorm: thunderstormWeatherTextImage,
+        Snow: snowWeatherTextImage,
+        Wind: windWeatherTextImage
+    }
+
     return (
         <div className="WeatherDetails">
 
@@ -185,6 +213,7 @@ function WeatherDetails(): JSX.Element {
                                 <span key={index}>
                                     <h3>{temp.WeatherText}</h3>
                                     <h2>{temp.Temperature.Metric.Value} °{temp.Temperature.Metric.Unit}</h2>
+                                    <img src={weatherImageMapping[temp.WeatherText as WeatherCondition] || defaultWeatherTextImage} alt={temp.WeatherText} />
                                 </span>
                             ))
                         ) : (
@@ -206,6 +235,7 @@ function WeatherDetails(): JSX.Element {
                                 <h6>{convertTemperature(dailyForecast.Temperature.Minimum)}
                                     - {convertTemperature(dailyForecast.Temperature.Maximum)}
                                 </h6>
+                                <img src={weatherImageMapping[dailyForecast.Day.IconPhrase as WeatherCondition] || defaultWeatherTextImage} alt={dailyForecast.Day.IconPhrase} />
                             </span>
                         </div>
                     ))
