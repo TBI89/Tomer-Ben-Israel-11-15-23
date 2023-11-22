@@ -20,36 +20,54 @@ import temperatureService from "../../../Services/TemperatureService";
 import useTitle from "../../../Utils/UseTitle";
 import Spinner from "../../SharedArea/Spinner/Spinner";
 import "./WeatherDetails.css";
+import favoritesService from '../../../Services/FavoritesService';
 
 function WeatherDetails(): JSX.Element {
     const [location, setLocation] = useState<LocationModel | null>(null);
     const [temperature, setTemperature] = useState<TemperatureModel[]>([]);
     const [forecast, setForecast] = useState<ForecastModel>();
     const [cityInput, setCityInput] = useState<string>("");
-    const [favorites, setFavorites] = useState<FavoritesModel[]>([]);
-    const [isFavorite, setIsFavorite] = useState<boolean>(false);
+    const [isCityInFavorites, setIsCityInFavorites] = useState<boolean>(false);
+
     const params = useParams();
     const navigate = useNavigate();
 
     useTitle("Weather In My Pocket | Home");
 
+    // Production:
     useEffect(() => {
-        const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
-        const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
-        setIsFavorite(isCityInFavorites);
-
-        fetchLocationData(params.cityName || "tel-aviv");
-        fetchTemperatureData(params.cityName || "tel-aviv");
-        fetchForecastData(params.cityName || "tel-aviv");
+        async function fetchData() {
+            const locationData = await locationsService.getOneCity(params.cityName || "tel-aviv");
+            setLocation(locationData[0]);
+    
+            const temperatureData = await locationsService.getOneCity(params.cityName || "tel-aviv");
+            const locationKey = temperatureData[0]?.Key;
+            if (locationKey) {
+                const currentTempData = await temperatureService.getCurrentTemp(locationKey);
+                setTemperature(currentTempData);
+            } else {
+                notifyService.error("Error fetching temperature data");
+            }
+    
+            const forecastData = await locationsService.getOneCity(params.cityName || "tel-aviv");
+            const forecastLocationKey = forecastData[0]?.Key;
+            if (forecastLocationKey) {
+                const fiveDayForecastData = await temperatureService.getFiveDayForecast(forecastLocationKey);
+                setForecast(fiveDayForecastData);
+            } else {
+                notifyService.error("Error fetching forecast data");
+            }
+    
+            const isCityFavorite = favoritesService.isCityInFavorites(locationData[0]?.LocalizedName || "");
+            setIsCityInFavorites(isCityFavorite);
+        }
+    
+        fetchData();
     }, [params.cityName]);
-
-    // Display data locally for development only:
+    
+    // Dev mode:
     // useEffect(() => {
     //     async function getLocalData() {
-    //         const favoritesFromStorage = JSON.parse(sessionStorage.getItem("favorites")) || [];
-    //         const isCityInFavorites = favoritesFromStorage.some((fav: FavoritesModel) => fav.cityName === params.cityName);
-    //         setIsFavorite(isCityInFavorites);
-
     //         const locationResponse = await fetch("/AutoCompleteSearch.json");
     //         const locationData = await locationResponse.json();
     //         setLocation(locationData[0]);
@@ -61,45 +79,12 @@ function WeatherDetails(): JSX.Element {
     //         const forecastResponse = await fetch("/FiveDayForecast.json");
     //         const forecastData = await forecastResponse.json();
     //         setForecast(forecastData);
+
+    //         const isCityFavorite = favoritesService.isCityInFavorites(locationData[0]?.LocalizedName || "");
+    //         setIsCityInFavorites(isCityFavorite);
     //     }
     //     getLocalData();
     // }, [params.cityName]);
-
-    function fetchLocationData(cityName: string) {
-        locationsService.getOneCity(cityName)
-            .then(locations => setLocation(locations[0]))
-            .catch(err => notifyService.error(err));
-    }
-
-    function fetchTemperatureData(cityName: string) {
-        locationsService.getOneCity(cityName)
-            .then(locations => {
-                const locationKey = locations[0]?.Key;
-                if (locationKey) {
-                    temperatureService.getCurrentTemp(locationKey)
-                        .then(temperatures => setTemperature(temperatures))
-                }
-                else {
-                    notifyService.error("Error fetching temperature data");
-                }
-            })
-            .catch(err => notifyService.error(err));
-    }
-
-    function fetchForecastData(cityName: string) {
-        locationsService.getOneCity(cityName)
-            .then(locations => {
-                const locationKey = locations[0]?.Key;
-                if (locationKey) {
-                    temperatureService.getFiveDayForecast(locationKey)
-                        .then(forecasts => setForecast(forecasts))
-                }
-                else {
-                    notifyService.error("Error fetching forecast data");
-                }
-            })
-            .catch(err => notifyService.error(err));
-    }
 
     function handleSearch(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -133,20 +118,16 @@ function WeatherDetails(): JSX.Element {
                 `${WeatherText}, ${Value}° ${Unit}`
             );
 
-            const isAlreadyInFavorites = favorites.some(fav => fav.cityName === newFavorite.cityName);
+            const isAlreadyInFavorites = favoritesService.isCityInFavorites(newFavorite.cityName);
 
             if (isAlreadyInFavorites) {
-                const updatedFavorites = favorites.filter(fav => fav.cityName !== newFavorite.cityName);
-                setFavorites(updatedFavorites);
-                sessionStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-                setIsFavorite(false);
+                favoritesService.removeFromFavorites(newFavorite.cityName);
                 notifyService.success("The city was removed from your favorites!");
             } else {
-                setFavorites(prevFavorites => [...prevFavorites, newFavorite]);
-                sessionStorage.setItem("favorites", JSON.stringify([...favorites, newFavorite]));
-                setIsFavorite(true);
+                favoritesService.addToFavorites(newFavorite);
                 notifyService.success("The city was added to your favorites!");
             }
+            setIsCityInFavorites(!isAlreadyInFavorites);
         } else {
             notifyService.error("Error fetching data for the favorite city");
         }
@@ -196,9 +177,13 @@ function WeatherDetails(): JSX.Element {
 
             <button
                 className="AddToFavoritesButton"
-                onClick={() => saveCityToSessionStorage(cityInput)}
+                onClick={() => saveCityToSessionStorage(administrativeAreaName)}
             >
-                {isFavorite ? <FavoriteIcon fontSize="large" /> : <FavoriteBorderIcon fontSize="large" />}
+                {favoritesService.isCityInFavorites(administrativeAreaName) ? (
+                    <FavoriteIcon fontSize="large" />
+                ) : (
+                    <FavoriteBorderIcon fontSize="large" />
+                )}
             </button>
 
             <div className="LocationDataContainer">

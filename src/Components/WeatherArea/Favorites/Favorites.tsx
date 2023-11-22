@@ -2,15 +2,15 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import FavoritesModel from "../../../Models/FavoritesModel";
+import notifyService from '../../../Services/NotifyService';
 import useTitle from "../../../Utils/UseTitle";
 import "./Favorites.css";
-import notifyService from '../../../Services/NotifyService';
 
 function Favorites(): JSX.Element {
-
-    useTitle("Weather In My Pocket | Favorites");
     const [favorites, setFavorites] = useState<FavoritesModel[]>([]);
     const navigate = useNavigate();
+
+    useTitle("Weather In My Pocket | Favorites");
 
     useEffect(() => {
         const savedFavorites = JSON.parse(sessionStorage.getItem("favorites") || "[]");
@@ -19,7 +19,8 @@ function Favorites(): JSX.Element {
             navigate("/home/tel-aviv");
         }
         setFavorites(savedFavorites);
-    }, []);
+    }, [navigate]);
+
 
     return (
         <div className="Favorites">
