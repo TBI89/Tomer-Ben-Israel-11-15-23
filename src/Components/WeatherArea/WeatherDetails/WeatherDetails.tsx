@@ -21,6 +21,7 @@ import useTitle from "../../../Utils/UseTitle";
 import Spinner from "../../SharedArea/Spinner/Spinner";
 import "./WeatherDetails.css";
 import favoritesService from '../../../Services/FavoritesService';
+import appConfig from '../../../Utils/AppConfig';
 
 function WeatherDetails(): JSX.Element {
     const [location, setLocation] = useState<LocationModel | null>(null);
@@ -34,57 +35,45 @@ function WeatherDetails(): JSX.Element {
 
     useTitle("Weather In My Pocket | Home");
 
-    // Production:
     useEffect(() => {
         async function fetchData() {
-            const locationData = await locationsService.getOneCity(params.cityName || "tel-aviv");
+            let locationData, temperatureData, forecastData;
+    
+            if (appConfig.baseUrl) {
+                locationData = await locationsService.getOneCity(params.cityName || "tel-aviv");
+                const locationKey = locationData[0]?.Key;
+
+                if (locationKey) {
+                    temperatureData = await temperatureService.getCurrentTemp(locationKey);
+                    forecastData = await temperatureService.getFiveDayForecast(locationKey);
+                } else {
+                    notifyService.error("Error fetching temperature data");
+                }
+            } else {
+                const locationResponse = await fetch("/AutoCompleteSearch.json");
+                locationData = await locationResponse.json();
+    
+                const temperatureResponse = await fetch("/CurrentConditions.json");
+                temperatureData = await temperatureResponse.json();
+    
+                const forecastResponse = await fetch("/FiveDayForecast.json");
+                forecastData = await forecastResponse.json();
+            }
+
             setLocation(locationData[0]);
-    
-            const temperatureData = await locationsService.getOneCity(params.cityName || "tel-aviv");
-            const locationKey = temperatureData[0]?.Key;
-            if (locationKey) {
-                const currentTempData = await temperatureService.getCurrentTemp(locationKey);
-                setTemperature(currentTempData);
-            } else {
-                notifyService.error("Error fetching temperature data");
-            }
-    
-            const forecastData = await locationsService.getOneCity(params.cityName || "tel-aviv");
-            const forecastLocationKey = forecastData[0]?.Key;
-            if (forecastLocationKey) {
-                const fiveDayForecastData = await temperatureService.getFiveDayForecast(forecastLocationKey);
-                setForecast(fiveDayForecastData);
-            } else {
-                notifyService.error("Error fetching forecast data");
-            }
     
             const isCityFavorite = favoritesService.isCityInFavorites(locationData[0]?.LocalizedName || "");
             setIsCityInFavorites(isCityFavorite);
+    
+            setTemperature(temperatureData);
+            setForecast(forecastData);
         }
+
+        console.log("NODE_ENV:", process.env.NODE_ENV);
+        console.log(process.env);
     
         fetchData();
     }, [params.cityName]);
-    
-    // Dev mode:
-    // useEffect(() => {
-    //     async function getLocalData() {
-    //         const locationResponse = await fetch("/AutoCompleteSearch.json");
-    //         const locationData = await locationResponse.json();
-    //         setLocation(locationData[0]);
-
-    //         const temperatureResponse = await fetch("/CurrentConditions.json");
-    //         const temperatureData = await temperatureResponse.json();
-    //         setTemperature(temperatureData);
-
-    //         const forecastResponse = await fetch("/FiveDayForecast.json");
-    //         const forecastData = await forecastResponse.json();
-    //         setForecast(forecastData);
-
-    //         const isCityFavorite = favoritesService.isCityInFavorites(locationData[0]?.LocalizedName || "");
-    //         setIsCityInFavorites(isCityFavorite);
-    //     }
-    //     getLocalData();
-    // }, [params.cityName]);
 
     function handleSearch(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
