@@ -68,9 +68,6 @@ function WeatherDetails(): JSX.Element {
             setTemperature(temperatureData);
             setForecast(forecastData);
         }
-
-        console.log("NODE_ENV:", process.env.NODE_ENV);
-        console.log(process.env);
     
         fetchData();
     }, [params.cityName]);
